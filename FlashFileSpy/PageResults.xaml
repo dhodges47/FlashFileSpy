@@ -10,7 +10,9 @@
 
     <Grid x:Name="pageResults">
         <ScrollViewer>
-        <TextBlock x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0"/>
+            <TextBlock x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0"><InlineUIContainer>
+                <Button Content="Return" Width="75" Click="btnReturn_onClick"/>
+            </InlineUIContainer></TextBlock>
         </ScrollViewer>
 
     </Grid>

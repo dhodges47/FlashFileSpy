@@ -35,5 +35,12 @@ namespace FlashFileSpy
 
             }
         }
+
+        private void btnReturn_onClick(object sender, RoutedEventArgs e)
+        {
+            NavigationService ns = this.NavigationService;
+            Uri uri = new Uri("PageStart.xaml", UriKind.Relative);
+            this.NavigationService.Navigate(uri);
+        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -11,9 +9,6 @@ using System.Windows.Navigation;
 
 namespace FlashFileSpy
 {
-    /// <summary>
-    /// Interaction logic for PageStart.xaml
-    /// </summary>
     public partial class PageStart : Page
     {
         string[] extensions = new[] { ".swf", ".fla", ".flv" };
@@ -25,12 +20,6 @@ namespace FlashFileSpy
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                //var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                //Debug.WriteLine("Got Files");
-                //foreach (var file in files)
-                //{
-                //    Debug.WriteLine($"  File={file}");
-                //}
             }
         }
 
@@ -94,10 +83,6 @@ namespace FlashFileSpy
                 }
                 NavigationService ns = this.NavigationService;
                 Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
-
-                // Get the navigation service that was used to 
-                // navigate to this page, and navigate to 
-                // AnotherPage.xaml
                 this.NavigationService.Navigate(uri);
 
             }
@@ -179,6 +164,9 @@ namespace FlashFileSpy
                 if ((App.Current as App).listFlashFiles.Count > 0)
                 {
                     MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                    NavigationService ns = this.NavigationService;
+                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
+                    this.NavigationService.Navigate(uri);
 
                 }
 
@@ -195,6 +183,9 @@ namespace FlashFileSpy
                 if (folderScan(di, false))
                 {
                     MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                    NavigationService ns = this.NavigationService;
+                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
+                    this.NavigationService.Navigate(uri);
                     // list of files is in listFlashFiles
                 }
             }
