@@ -7,13 +7,17 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageResults">
+    <ScrollViewer>
+        <StackPanel>
+            <Button Content="Return" Width="75" Margin="10" Click="btnReturn_onClick"/>
+            <Image x:Name="ImageGreenCheckmark" Height="100" Width="100" Source="images/transparent-green-checkmark-md.png" Visibility="Collapsed" />
+            <Label x:Name="labelNoFlash" FontSize="24" Content="No flash files!" HorizontalAlignment="Center" Visibility="Collapsed" />
+            <Image x:Name="ImageRedX" Height="100" Width="100" HorizontalAlignment="Center" Source="images/RedXInCircle.png" Visibility="Hidden" />
+            <TextBox x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0" Background="Transparent" IsReadOnly="true" AcceptsReturn="True" TextWrapping="Wrap">
 
-    <Grid x:Name="pageResults">
-        <ScrollViewer>
-            <TextBlock x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0"><InlineUIContainer>
-                <Button Content="Return" Width="75" Click="btnReturn_onClick"/>
-            </InlineUIContainer></TextBlock>
-        </ScrollViewer>
+            </TextBox>
 
-    </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>

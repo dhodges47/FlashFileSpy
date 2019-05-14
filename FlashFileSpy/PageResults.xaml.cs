@@ -29,10 +29,22 @@ namespace FlashFileSpy
         private void displayresults()
         {
             var listFlashFiles = (App.Current as App).listFlashFiles;
-            foreach (var sFlashFilePath in listFlashFiles)
+            if (listFlashFiles.Count > 0)
             {
-                txtBlock.Inlines.Add($"{sFlashFilePath}\n");
-
+                ImageRedX.Visibility = Visibility.Visible;
+                ImageGreenCheckmark.Visibility = Visibility.Collapsed;
+                labelNoFlash.Visibility = Visibility.Collapsed;
+                txtBlock.Text = $"{listFlashFiles.Count} Flash files found:{Environment.NewLine}";
+                foreach (var sFlashFilePath in listFlashFiles)
+                {
+                    txtBlock.Text += $"{sFlashFilePath}{Environment.NewLine}";
+                }
+            }
+            else
+            {
+                ImageRedX.Visibility = Visibility.Collapsed;
+                ImageGreenCheckmark.Visibility = Visibility.Visible;
+                labelNoFlash.Visibility = Visibility.Visible;
             }
         }
 

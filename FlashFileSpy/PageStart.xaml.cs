@@ -20,6 +20,7 @@ namespace FlashFileSpy
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                
             }
         }
 
@@ -27,6 +28,8 @@ namespace FlashFileSpy
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                var listFlashFilesx = (App.Current as App).listFlashFiles;
+                listFlashFilesx.Clear();
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (var file in files)
                 {
@@ -66,19 +69,24 @@ namespace FlashFileSpy
                         }
                         if ((App.Current as App).listFlashFiles.Count > 0)
                         {
-                            MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                           // MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
 
                         }
                     }
                     else
                     {
-                        //it's a regular filefile
-                        // todo check the extension
+                        //it's a regular file
                         Debug.WriteLine("It's a regular file");
                         if (bIsFlashFile(fi))
                         {
                             MessageBox.Show("Flash file found");
                         }
+                        else
+                        {
+                            MessageBox.Show("Not a flash file");
+                        }
+                        return;
+
                     }
                 }
                 NavigationService ns = this.NavigationService;

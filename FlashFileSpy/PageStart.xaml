@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageStart">
 
-    <Viewbox x:Name="Viewbox1" HorizontalAlignment="Left" Height="auto"  Width="879" Margin="0,0,-79,-48">
+    <Viewbox x:Name="Viewbox1" HorizontalAlignment="Left" Height="auto"  Width="879" Margin="0,0,0,0">
         <Grid AllowDrop="True" Drop="onDrop">
             <Grid.RowDefinitions>
                 <RowDefinition Height="146*"/>
@@ -22,7 +22,7 @@
             <Rectangle HorizontalAlignment="Left" Height="192" Margin="25,31.461,25,25" Stroke="Black" VerticalAlignment="Top" Width="616" Drop="onDropRectangle" Fill="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" DragOver="onDragOver" Grid.ColumnSpan="2" Grid.Row="1"/>
             <Label Content="Drag and drop a folder or Zip file to the yellow area." HorizontalAlignment="Left" Margin="122,114,0,0" VerticalAlignment="Top" FontSize="16" Grid.ColumnSpan="2"/>
 
-            <Button Margin="28,9.461,338,-145" Content="Click Here" Cursor="Hand" Grid.Column="1" Click="btnFileExplorer_onClick" Grid.Row="1">
+            <Button Margin="28,9,338,218" Content="Click Here" Cursor="Hand" Grid.Column="1" Click="btnFileExplorer_onClick" Grid.Row="1">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <TextBlock TextDecorations="Underline">
@@ -42,7 +42,7 @@
                 </Button.Style>
             </Button>
             <Label Content="to select a zip file" Grid.Column="1" HorizontalAlignment="Left" Margin="80,4.461,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-            <Button Margin="197,9.461,170,-145" Content="Click Here" Cursor="Hand" Grid.Column="1" Click="btnFolderExplorer_onClick" Grid.Row="1">
+            <Button Margin="197,9,170,218" Content="Click Here" Cursor="Hand" Grid.Column="1" Click="btnFolderExplorer_onClick" Grid.Row="1">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <TextBlock TextDecorations="Underline"><InlineUIContainer>
