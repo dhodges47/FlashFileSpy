@@ -47,8 +47,8 @@ namespace FlashFileSpy
                         DirectoryInfo di = new DirectoryInfo(fi.FullName);
                         if (folderScan(di, false))
                         {
-                            MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
-                            // list of files is in listFlashFiles
+                            //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                            // list of files is in listFlashFiles, and PageResults will display them
                         }
 
                     }
@@ -69,7 +69,8 @@ namespace FlashFileSpy
                         }
                         if ((App.Current as App).listFlashFiles.Count > 0)
                         {
-                           // MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                            // MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                            // list of files is in listFlashFiles, and PageResults will display them
 
                         }
                     }
@@ -150,6 +151,8 @@ namespace FlashFileSpy
 
         private void btnFileExplorer_onClick(object sender, RoutedEventArgs e)
         {
+            var listFlashFilesx = (App.Current as App).listFlashFiles;
+            listFlashFilesx.Clear();
             // for opening a zip file
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.DefaultExt = "zip";
@@ -171,7 +174,7 @@ namespace FlashFileSpy
                 }
                 if ((App.Current as App).listFlashFiles.Count > 0)
                 {
-                    MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                    //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
                     NavigationService ns = this.NavigationService;
                     Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
                     this.NavigationService.Navigate(uri);
@@ -183,6 +186,8 @@ namespace FlashFileSpy
 
         private void btnFolderExplorer_onClick(object sender, RoutedEventArgs e)
         {
+            var listFlashFilesx = (App.Current as App).listFlashFiles;
+            listFlashFilesx.Clear();
             System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -190,11 +195,11 @@ namespace FlashFileSpy
                 DirectoryInfo di = new DirectoryInfo(sPath);
                 if (folderScan(di, false))
                 {
-                    MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                    //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
                     NavigationService ns = this.NavigationService;
                     Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
                     this.NavigationService.Navigate(uri);
-                    // list of files is in listFlashFiles
+                    // list of files is in listFlashFiles, and PageResults will display them
                 }
             }
 

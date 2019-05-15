@@ -12,10 +12,13 @@
             <Button Content="Return" Width="75" Margin="10" Click="btnReturn_onClick"/>
             <Image x:Name="ImageGreenCheckmark" Height="100" Width="100" Source="images/transparent-green-checkmark-md.png" Visibility="Collapsed" />
             <Label x:Name="labelNoFlash" FontSize="24" Content="No flash files!" HorizontalAlignment="Center" Visibility="Collapsed" />
-            <Image x:Name="ImageRedX" Height="100" Width="100" HorizontalAlignment="Center" Source="images/RedXInCircle.png" Visibility="Hidden" />
-            <TextBox x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0" Background="Transparent" IsReadOnly="true" AcceptsReturn="True" TextWrapping="Wrap">
+            <WrapPanel>
 
-            </TextBox>
+                <Image x:Name="ImageRedX" Height="30" Width="30" HorizontalAlignment="Center" Source="images/RedXInCircle.png" Visibility="Visible" />
+                <TextBox x:Name="txtBlock"  VerticalAlignment="Top" Margin="15,0,0,0" Background="Transparent" IsReadOnly="true" AcceptsReturn="True" TextWrapping="Wrap">
+
+                </TextBox>
+            </WrapPanel>
 
 
         </StackPanel>
