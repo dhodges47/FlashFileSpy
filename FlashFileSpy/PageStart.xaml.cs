@@ -11,7 +11,7 @@ namespace FlashFileSpy
 {
     public partial class PageStart : Page
     {
-        string[] extensions = new[] { ".swf", ".fla", ".flv" };
+        string[] extensions = new[] { ".swf", ".fla", ".flv" }; // these file extensions are for flash files
         public PageStart()
         {
             InitializeComponent();
@@ -20,24 +20,26 @@ namespace FlashFileSpy
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                
+                // we handle this in onDropRectangle
             }
         }
-
+        /// <summary>
+        /// Drag/Drop event for when the user has dragged one or more folders and/or zip files to the drop rectangle, to be scanned
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void onDropRectangle(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                var listFlashFilesx = (App.Current as App).listFlashFiles;
-                listFlashFilesx.Clear();
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (var file in files)
+               
+                var listFlashFiles = (App.Current as App).listFlashFiles;
+                foreach (string file in (string[])e.Data.GetData(DataFormats.FileDrop))
                 {
+                    var flashFolder = new FlashFolder();
+                    flashFolder.pathName = file;
+                    listFlashFiles.Add(flashFolder);
                     Debug.WriteLine($"  File={file}");
-                }
-
-                foreach (string file in files)
-                {
                     FileInfo fi = new FileInfo(file);
                     if (fi.Attributes == FileAttributes.Directory)
                     {
@@ -45,7 +47,7 @@ namespace FlashFileSpy
                         // traverse the folder structure and scan the contents for flash files
                         Debug.WriteLine("It's a folder");
                         DirectoryInfo di = new DirectoryInfo(fi.FullName);
-                        if (folderScan(di, false))
+                        if (folderScan(di, false, flashFolder))
                         {
                             //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
                             // list of files is in listFlashFiles, and PageResults will display them
@@ -62,7 +64,7 @@ namespace FlashFileSpy
                             {
                                 if (bIsFlashFile(sZippedFile.FullName))
                                 {
-                                    (App.Current as App).listFlashFiles.Add(sZippedFile.FullName);
+                                    flashFolder.lstFlashFilesFound.Add(sZippedFile.FullName);
 
                                 }
                             }
@@ -93,22 +95,101 @@ namespace FlashFileSpy
                 NavigationService ns = this.NavigationService;
                 Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
                 this.NavigationService.Navigate(uri);
-
             }
         }
-
-        private void onDragOver(object sender, DragEventArgs e)
+    /// <summary>
+    /// Button event for when the user has manually selected a zip file to be scanned
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+        private void btnFileExplorer_onClick(object sender, RoutedEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            var listFlashFiles = (App.Current as App).listFlashFiles;
+            listFlashFiles.Clear();
+            // for opening a zip file
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.DefaultExt = "zip";
+            openFileDialog.Filter = "zip files(*.zip)|*.zip|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
             {
-
-                e.Effects = DragDropEffects.Link;
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
+                string sPath = openFileDialog.FileName;
+                FileInfo fi = new FileInfo(sPath);
+                var flashFolder = new FlashFolder();
+                flashFolder.pathName = sPath;
+                listFlashFiles.Add(flashFolder);
+                using (ZipArchive archive = ZipFile.OpenRead(fi.FullName))
+                {
+                    foreach (ZipArchiveEntry sZippedFile in archive.Entries)
+                    {
+                        if (bIsFlashFile(sZippedFile.FullName))
+                        {
+                            flashFolder.lstFlashFilesFound.Add(sZippedFile.FullName);
+                        }
+                    }
+                }
+                if ((App.Current as App).listFlashFiles.Count > 0)
+                {
+                    NavigationService ns = this.NavigationService;
+                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
+                    this.NavigationService.Navigate(uri);
+                }
             }
         }
+        /// <summary>
+        /// Button event for when the user has manually selected a folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFolderExplorer_onClick(object sender, RoutedEventArgs e)
+        {
+            var listFlashFiles = (App.Current as App).listFlashFiles;
+            listFlashFiles.Clear();
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string sPath = folderBrowserDialog.SelectedPath;
+                var flashFolder = new FlashFolder();
+                flashFolder.pathName = sPath;
+                listFlashFiles.Add(flashFolder);
+                DirectoryInfo di = new DirectoryInfo(sPath);
+                if (folderScan(di, false, flashFolder))
+                {
+                    //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
+                    NavigationService ns = this.NavigationService;
+                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
+                    this.NavigationService.Navigate(uri);
+                    // list of files is in listFlashFiles, and PageResults will display them
+                }
+            }
+        }
+        /// <summary>
+        /// Scan a folder, looking for flashfiles.
+        /// </summary>
+        /// <param name="di"></param>
+        /// <param name="bContainsFlash"></param>
+        /// <param name="flashFolder"></param>
+        /// <returns></returns>
+        private bool folderScan(DirectoryInfo di, bool bContainsFlash, FlashFolder flashFolder)
+        {
+            bool b = bContainsFlash;
+            var listFlashFiles = (App.Current as App).listFlashFiles;
+            FileInfo[] filesFiltered =
+                           di.EnumerateFiles()
+                                .Where(f => extensions.Contains(f.Extension.ToLower()))
+                                .ToArray();
+            foreach (FileInfo f in filesFiltered)
+            {
+                flashFolder.lstFlashFilesFound.Add(f.FullName);
+                b = true;
+            }
+            var diSub = di.EnumerateDirectories();
+            foreach (DirectoryInfo dii in diSub)
+            {
+                b = folderScan(dii, b, flashFolder);
+            }
+            return b;
+        }
+
         private bool bIsFlashFile(FileInfo fi)
         {
             string s = fi.Extension.ToLower();
@@ -129,80 +210,17 @@ namespace FlashFileSpy
             }
             return false;
         }
-        private bool folderScan(DirectoryInfo di, bool bContainsFlash)
+        private void onDragOver(object sender, DragEventArgs e)
         {
-            bool b = bContainsFlash;
-            FileInfo[] filesFiltered =
-                           di.EnumerateFiles()
-                                .Where(f => extensions.Contains(f.Extension.ToLower()))
-                                .ToArray();
-            foreach (FileInfo f in filesFiltered)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                (App.Current as App).listFlashFiles.Add(f.FullName);
-                b = true;
+
+                e.Effects = DragDropEffects.Link;
             }
-            var diSub = di.EnumerateDirectories();
-            foreach (DirectoryInfo dii in diSub)
+            else
             {
-                b = folderScan(dii, b);
+                e.Effects = DragDropEffects.None;
             }
-            return b;
-        }
-
-        private void btnFileExplorer_onClick(object sender, RoutedEventArgs e)
-        {
-            var listFlashFilesx = (App.Current as App).listFlashFiles;
-            listFlashFilesx.Clear();
-            // for opening a zip file
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.DefaultExt = "zip";
-            openFileDialog.Filter = "zip files(*.zip)|*.zip|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string sPath = openFileDialog.FileName;
-                FileInfo fi = new FileInfo(sPath);
-                using (ZipArchive archive = ZipFile.OpenRead(fi.FullName))
-                {
-                    foreach (ZipArchiveEntry sZippedFile in archive.Entries)
-                    {
-                        if (bIsFlashFile(sZippedFile.FullName))
-                        {
-                            (App.Current as App).listFlashFiles.Add(sZippedFile.FullName);
-
-                        }
-                    }
-                }
-                if ((App.Current as App).listFlashFiles.Count > 0)
-                {
-                    //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
-                    NavigationService ns = this.NavigationService;
-                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
-                    this.NavigationService.Navigate(uri);
-
-                }
-
-            }
-        }
-
-        private void btnFolderExplorer_onClick(object sender, RoutedEventArgs e)
-        {
-            var listFlashFilesx = (App.Current as App).listFlashFiles;
-            listFlashFilesx.Clear();
-            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string sPath = folderBrowserDialog.SelectedPath;
-                DirectoryInfo di = new DirectoryInfo(sPath);
-                if (folderScan(di, false))
-                {
-                    //MessageBox.Show($"{(App.Current as App).listFlashFiles.Count} Flash file(s) found");
-                    NavigationService ns = this.NavigationService;
-                    Uri uri = new Uri("PageResults.xaml", UriKind.Relative);
-                    this.NavigationService.Navigate(uri);
-                    // list of files is in listFlashFiles, and PageResults will display them
-                }
-            }
-
         }
     }
 }

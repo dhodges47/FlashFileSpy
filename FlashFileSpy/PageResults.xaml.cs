@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FlashFileSpy
 {
@@ -29,15 +21,37 @@ namespace FlashFileSpy
         private void displayresults()
         {
             var listFlashFiles = (App.Current as App).listFlashFiles;
-            if (listFlashFiles.Count > 0)
+            var iCount = listFlashFiles.Where(ix => ix.lstFlashFilesFound.Count > 0).Count();
+            var iCount2 = 0;
+            foreach (var ix in listFlashFiles)
+            {
+                iCount2 += ix.lstFlashFilesFound.Count;
+            }
+            List<FlashFolder> listX = listFlashFiles.Where(ix => ix.lstFlashFilesFound.Count > 0).ToList();
+
+            if (iCount2 > 0)
             {
                 ImageRedX.Visibility = Visibility.Visible;
                 ImageGreenCheckmark.Visibility = Visibility.Collapsed;
                 labelNoFlash.Visibility = Visibility.Collapsed;
-                txtBlock.Text = $"{listFlashFiles.Count} Flash files found:{Environment.NewLine}";
-                foreach (var sFlashFilePath in listFlashFiles)
+                if (iCount > 1)
                 {
-                    txtBlock.Text += $"{sFlashFilePath}{Environment.NewLine}";
+                    txtBlock.Text = $"{iCount2} Flash files found in {iCount} files/folders:{Environment.NewLine}{Environment.NewLine}";
+                }
+                else if (iCount == 1)
+                {
+                    txtBlock.Text = $"{iCount2} Flash files found in {listX.FirstOrDefault().pathName}: {Environment.NewLine}";
+                }
+                foreach (FlashFolder ff in listX)
+                {
+                    if (iCount > 1)
+                    {
+                        txtBlock.Text += $"{ff.pathName}:{Environment.NewLine}{Environment.NewLine}";
+                    }
+                    foreach  (string s in ff.lstFlashFilesFound)
+                    {
+                        txtBlock.Text += $"    {s}{Environment.NewLine}";
+                    }
                 }
             }
             else
@@ -50,6 +64,7 @@ namespace FlashFileSpy
 
         private void btnReturn_onClick(object sender, RoutedEventArgs e)
         {
+            ((App.Current as App).listFlashFiles).Clear();
             NavigationService ns = this.NavigationService;
             Uri uri = new Uri("PageStart.xaml", UriKind.Relative);
             this.NavigationService.Navigate(uri);

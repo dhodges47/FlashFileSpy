@@ -13,11 +13,20 @@ namespace FlashFileSpy
     /// </summary>
     public partial class App : Application
     {
-        public List<string> listFlashFiles { get; set; }
+        public List<FlashFolder> listFlashFiles { get; set; }
         public App()
         {
-            listFlashFiles = new List<string>();
+            listFlashFiles = new List<FlashFolder>();
         }
 
+    }
+    public class FlashFolder
+    {
+        public FlashFolder ()
+        {
+            lstFlashFilesFound = new List<string>();
+        }
+        public string pathName { get; set; }
+        public List<string> lstFlashFilesFound { get; set; }
     }
 }
