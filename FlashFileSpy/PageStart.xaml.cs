@@ -15,6 +15,8 @@ namespace FlashFileSpy
         public PageStart()
         {
             InitializeComponent();
+            labelVersion.Content = $"Version {Properties.Settings.Default.Version}"; ;
+            string author = Properties.Settings.Default.CreatedBy;
         }
         private void onDrop(object sender, DragEventArgs e)
         {
