@@ -7,8 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
+
 namespace FlashFileSpy
 {
+    // Created by Outermost Software, LLC 2019
     public partial class PageStart : Page
     {
         string[] extensions = new[] { ".swf", ".fla", ".flv" }; // these file extensions are for flash files
